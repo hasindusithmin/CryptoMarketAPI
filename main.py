@@ -173,7 +173,7 @@ async def Ticker_Price_Change(symbols: List[str] = Query(None)):
 
         symbols (List[str], optional): Defaults to Query(None).
 
-    Raises:
+    Raises:order book ticker
 
         HTTPException: symbols is not valid.
 
@@ -196,5 +196,40 @@ async def Ticker_Price_Change(symbols: List[str] = Query(None)):
         media_type='text/csv',
         headers={
             "Content-Disposition": f"attachment; filename=ticker_price_change_24hr_{int(UNIX)}.csv"
+        }
+    ) 
+    
+@app.get("/order-book-ticker")
+async def Order_Book_Ticker(symbols: List[str] = Query(None)):
+    """
+    An order book ticker is a financial instrument that displays real-time data about the orders that have been placed for a particular security or financial instrument, such as a stock, bond, or cryptocurrency. The order book ticker typically includes information about the current bid and ask prices for the security or instrument, as well as the quantity of the security or instrument that has been bid or asked for at those prices.
+
+    Query:
+    
+        symbols (List[str], optional): Defaults to Query(None).
+
+    Raises:
+    
+        HTTPException: symbols is not valid.
+
+    Returns:
+    
+        Csv: Order Book Ticker
+    """
+    df = crypto.GET_SYMBOL_ORDER_BOOK_TICKER(SYMBOLS=symbols)
+    if type(df) != pd.DataFrame:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="It has been determined that the symbol provided is invalid."
+        )
+    BYTE_IO = io.BytesIO()
+    df.to_csv(BYTE_IO)
+    BYTE_IO.seek(0)
+    UNIX = datetime.now().timestamp()
+    return StreamingResponse(
+        content=BYTE_IO,
+        media_type='text/csv',
+        headers={
+            "Content-Disposition": f"attachment; filename=order_book_ticker_{int(UNIX)}.csv"
         }
     ) 
