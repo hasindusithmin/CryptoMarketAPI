@@ -126,7 +126,7 @@ async def Candlestick_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500)
     
         Csv: Candlestick Data
     """
-    df = crypto.GET_CANDLESTICK_DATA(SYMBOL=symbol,INTERVAL=interval,limit=limit)
+    df = crypto.GET_CANDLESTICK_DATA(SYMBOL=symbol,INTERVAL=interval,LIMIT=limit)
     if type(df) != pd.DataFrame:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -163,7 +163,7 @@ async def UIKlines_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
     
         Csv: Candlestick Data
     """
-    df = crypto.GET_UIKLINES(SYMBOL=symbol,INTERVAL=interval,limit=limit)
+    df = crypto.GET_UIKLINES(SYMBOL=symbol,INTERVAL=interval,LIMIT=limit)
     if type(df) != pd.DataFrame:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -182,13 +182,13 @@ async def UIKlines_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
     ) 
     
 @app.get("/ticker-price-change-24hr")
-async def Ticker_Price_Change(symbols: List[str] = Query(None)):
+async def Ticker_Price_Change(symbols: List[str] = Query(["BTCUSDT"])):
     """
     24-hour ticker price change statistics refer to the change in the price of a particular financial instrument, such as a stock, bond, or cryptocurrency, over a 24-hour period. These statistics can be displayed in the form of a percentage, indicating the percentage change in the price over the 24-hour period, or as an absolute value, indicating the dollar or currency amount by which the price has changed.
 
     Query:
 
-        symbols (List[str], optional): Defaults to Query(None).
+        symbols (List[str], optional): Defaults to ["BTCUSDT"].
 
     Raises:order book ticker
 
@@ -217,13 +217,13 @@ async def Ticker_Price_Change(symbols: List[str] = Query(None)):
     ) 
     
 @app.get("/order-book-ticker")
-async def Order_Book_Ticker(symbols: List[str] = Query(None)):
+async def Order_Book_Ticker(symbols: List[str] = Query(["BTCUSDT"])):
     """
     An order book ticker is a financial instrument that displays real-time data about the orders that have been placed for a particular security or financial instrument, such as a stock, bond, or cryptocurrency. The order book ticker typically includes information about the current bid and ask prices for the security or instrument, as well as the quantity of the security or instrument that has been bid or asked for at those prices.
 
     Query:
     
-        symbols (List[str], optional): Defaults to Query(None).
+        symbols (List[str], optional): Defaults to ["BTCUSDT"].
 
     Raises:
     
