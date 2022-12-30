@@ -98,7 +98,7 @@ async def Candlestick_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500)
         
         interval (str, optional): Defaults to "1h". ['1s','1m','3m','5m','15m','30m','1h','2h','4h','6h','8h','12h','1d','3d','1w','1M']
 
-        limit (int, optional): Defaults to 500. [500 - 100]
+        limit (int, optional): Defaults to 500. [500 - 1000]
 
     Raises:
     
@@ -125,4 +125,40 @@ async def Candlestick_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500)
             "Content-Disposition": f"attachment; filename=candlestick_data_{int(UNIX)}.csv"
         }
     )
+
+@app.get('/uiklines-data')
+async def UIKlines_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
+    """
+    Query:
     
+        symbol (str, optional): Defaults to "btcusdt".
+        
+        interval (str, optional): Defaults to "1h". ['1s','1m','3m','5m','15m','30m','1h','2h','4h','6h','8h','12h','1d','3d','1w','1M']
+
+        limit (int, optional): Defaults to 500. [500 - 1000]
+
+    Raises:
+    
+        HTTPException: symbol or interval is not valid.
+
+    Returns:
+    
+        Csv: Candlestick Data
+    """
+    df = crypto.GET_UIKLINES(SYMBOL=symbol,INTERVAL=interval,limit=limit)
+    if type(df) != pd.DataFrame:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=df
+        )
+    BYTE_IO = io.BytesIO()
+    df.to_csv(BYTE_IO)
+    BYTE_IO.seek(0)
+    UNIX = datetime.now().timestamp()
+    return StreamingResponse(
+        content=BYTE_IO,
+        media_type='text/csv',
+        headers={
+            "Content-Disposition": f"attachment; filename=uiklines_data_{int(UNIX)}.csv"
+        }
+    ) 
