@@ -1,7 +1,8 @@
 import io
 import pandas as pd
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, status
+from typing import List
+from fastapi import FastAPI, HTTPException, status, Query
 from fastapi.responses import StreamingResponse
 from crypto_market_wrapper import crypto
 
@@ -160,5 +161,40 @@ async def UIKlines_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
         media_type='text/csv',
         headers={
             "Content-Disposition": f"attachment; filename=uiklines_data_{int(UNIX)}.csv"
+        }
+    ) 
+    
+@app.get("/ticker-price-change-24hr")
+async def Ticker_Price_Change(symbols: List[str] = Query(None)):
+    """
+    24-hour ticker price change statistics refer to the change in the price of a particular financial instrument, such as a stock, bond, or cryptocurrency, over a 24-hour period. These statistics can be displayed in the form of a percentage, indicating the percentage change in the price over the 24-hour period, or as an absolute value, indicating the dollar or currency amount by which the price has changed.
+
+    Query:
+
+        symbols (List[str], optional): Defaults to Query(None).
+
+    Raises:
+
+        HTTPException: symbols is not valid.
+
+    Returns:
+
+        Csv: Ticker Price Change
+    """
+    df = crypto.GET_TICKER_PRICE_CHANGE_24H(SYMBOLS=symbols)
+    if type(df) != pd.DataFrame:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="It has been determined that the symbol provided is invalid."
+        )
+    BYTE_IO = io.BytesIO()
+    df.to_csv(BYTE_IO)
+    BYTE_IO.seek(0)
+    UNIX = datetime.now().timestamp()
+    return StreamingResponse(
+        content=BYTE_IO,
+        media_type='text/csv',
+        headers={
+            "Content-Disposition": f"attachment; filename=ticker_price_change_24hr_{int(UNIX)}.csv"
         }
     ) 
