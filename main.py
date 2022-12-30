@@ -3,16 +3,33 @@ import pandas as pd
 from datetime import datetime
 from typing import List
 from fastapi import FastAPI, HTTPException, status, Query
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, RedirectResponse
 from crypto_market_wrapper import crypto
 
+
+description = """
+The Cryptocrypto API is designed to provide users with the information they need to track and analyze cryptocurrency markets. The API will allow users to access a range of data on cryptocurrencies, including recent and aggregate trades data, candlestick data, and UIKlines data.
+
+With this API, users can access:
+
+- Recent Trades List Csv
+- Aggregate Trades List Csv
+- Candlestick Data Csv
+- UIKlines Data Csv
+- 24hr Ticker Price Change Statistics Csv
+- Symbol Order Book Ticker Csv
+
+
+"""
+
 app = FastAPI(
-    title="CryptoMarketAPI"
+    title="CryptoMarketAPI",
+    description=description
 )
 
 @app.get("/")
 def redirect_to_docs():
-    return
+    return RedirectResponse('/docs')
 
 # Recent Trades List
 @app.get("/recent-trades")
