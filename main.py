@@ -8,7 +8,9 @@ from crypto_market_wrapper import crypto
 
 
 description = """
-The Cryptocrypto API is designed to provide users with the information they need to track and analyze cryptocurrency markets. The API will allow users to access a range of data on cryptocurrencies, including recent and aggregate trades data, candlestick data, and UIKlines data.
+![cryptomarketapi](https://i.ibb.co/QmQPyRJ/cryptomarketapi.jpg)
+
+The CryptoMarket API is designed to provide users with the information they need to track and analyze cryptocurrency markets. The API will allow users to access a range of data on cryptocurrencies, including recent and aggregate trades data, candlestick data, and UIKlines data.
 
 With this API, users can access:
 
