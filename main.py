@@ -29,12 +29,30 @@ app = FastAPI(
     description=description
 )
 
-@app.get("/")
+@app.get("/",tags=[''])
 def redirect_to_docs():
     return RedirectResponse('/docs')
 
+
+
+@app.get("/symbol",tags=[''])
+async def Symbols():
+    df = crypto.GET_SYMBOLS()
+    BYTE_IO = io.BytesIO()
+    df.to_csv(BYTE_IO)
+    BYTE_IO.seek(0)
+    UNIX = datetime.now().timestamp()
+    return StreamingResponse(
+        content=BYTE_IO,
+        media_type='text/csv',
+        headers={
+            "Content-Disposition": f"attachment; filename=symbols_{int(UNIX)}.csv"
+        }
+    )
+    
+
 # Recent Trades List
-@app.get("/recent-trades")
+@app.get("/recent-trades",tags=[''])
 async def Recent_Trades_List(symbol:str="btcusdt"):
     """
     A recent trades list is a record of the most recent trades that have been made in a particular security or financial instrument. It typically includes information such as the time the trade was executed, the price at which the trade was made, and the quantity of the security or instrument that was traded. The recent trades list can be useful for investors and traders who are interested in following the activity in a particular security or instrument, as it provides a real-time record of the most recent trades that have been made. It can also provide insight into current market conditions and trends.
@@ -71,7 +89,7 @@ async def Recent_Trades_List(symbol:str="btcusdt"):
     )
 
 # Recent Trades List
-@app.get("/aggregate-trades")
+@app.get("/aggregate-trades",tags=[''])
 async def Aggregate_Trades_List(symbol:str="btcusdt"):
     """
     An aggregate trades list is a record of all the trades that have been made in a particular security or financial instrument over a specified period of time. It provides information about the trading activity in a particular security or instrument, and can be useful for analyzing trends and patterns in the market. The aggregate trades list is typically compiled from the data contained in a recent trades list, which is a record of the most recent trades that have been made in a particular security or instrument. It is typically updated on a regular basis, such as daily or weekly.
@@ -107,7 +125,7 @@ async def Aggregate_Trades_List(symbol:str="btcusdt"):
         }
     )
     
-@app.get('/candlestick-data')
+@app.get('/candlestick-data',tags=[''])
 async def Candlestick_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
     """
     Candlestick data is a type of chart that is used to display the price action of a financial instrument, such as a stock, bond, or currency pair, over a specified period of time. Each candlestick on the chart represents a certain period of time, such as one day or one hour, and is comprised of four components: the open, high, low, and close prices.
@@ -146,7 +164,7 @@ async def Candlestick_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500)
         }
     )
 
-@app.get('/uiklines-data')
+@app.get('/uiklines-data',tags=[''])
 async def UIKlines_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
     """
     Query:
@@ -183,7 +201,7 @@ async def UIKlines_Data(symbol:str="btcusdt",interval:str="1h",limit:int=500):
         }
     ) 
     
-@app.get("/ticker-price-change-24hr")
+@app.get("/ticker-price-change-24hr",tags=[''])
 async def Ticker_Price_Change(symbols: List[str] = Query(["BTCUSDT"])):
     """
     24-hour ticker price change statistics refer to the change in the price of a particular financial instrument, such as a stock, bond, or cryptocurrency, over a 24-hour period. These statistics can be displayed in the form of a percentage, indicating the percentage change in the price over the 24-hour period, or as an absolute value, indicating the dollar or currency amount by which the price has changed.
@@ -218,7 +236,7 @@ async def Ticker_Price_Change(symbols: List[str] = Query(["BTCUSDT"])):
         }
     ) 
     
-@app.get("/order-book-ticker")
+@app.get("/order-book-ticker",tags=[''])
 async def Order_Book_Ticker(symbols: List[str] = Query(["BTCUSDT"])):
     """
     An order book ticker is a financial instrument that displays real-time data about the orders that have been placed for a particular security or financial instrument, such as a stock, bond, or cryptocurrency. The order book ticker typically includes information about the current bid and ask prices for the security or instrument, as well as the quantity of the security or instrument that has been bid or asked for at those prices.
