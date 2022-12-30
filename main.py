@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List
 from fastapi import FastAPI, HTTPException, status, Query
 from fastapi.responses import StreamingResponse, RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from crypto_market_wrapper import crypto
 
 
@@ -26,8 +27,26 @@ With this API, users can access:
 
 app = FastAPI(
     title="CryptoMarketAPI",
-    description=description
+    description=description,
+    version="0.0.4",
+    license_info={
+        "name": "Find me on Linkedin",
+        "url": "https://www.linkedin.com/in/hasindu-sithmin-9a1a12209/",
+    },
+    contact={
+        "name": "Hasindu Sithmin",
+        "email": "hasindusithmin64@gmail.com",
+    },
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/",tags=[''])
 def redirect_to_docs():
@@ -37,6 +56,12 @@ def redirect_to_docs():
 
 @app.get("/symbol",tags=[''])
 async def Symbols():
+    """
+    A list of all cryptocurrency symbols that are listed on the Binance exchange.
+    
+    Returns:
+        Csv: Symbols
+    """
     df = crypto.GET_SYMBOLS()
     BYTE_IO = io.BytesIO()
     df.to_csv(BYTE_IO)
